@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
 }
 
@@ -12,17 +9,39 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+  id            Int                   @id(map: "user_pk") @default(autoincrement())
+  name          String?
+  comments      Comment[]             @relation("comment_writer")
+  posts         Post[]                @relation("post_author")
+  subscribers   Usersubscription[]    @relation("subscribers")
+  creators      Usersubscription[]    @relation("creators")
 }
 
 model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+  id              Int         @id(map: "post_pk") @default(autoincrement())
+  title           String
+  content         String?
+  author          User        @relation("post_author", fields: [authorId], references: [id], map: "post_author_fk")
+  authorId        Int
+  comments        Comment[]   @relation("comment_post")
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  toBeDeletedAt   DateTime?
+}
+
+model Comment {
+  id       Int    @id(map: "comment_pk") @default(autoincrement())
+  content  String
+  writer   User   @relation("comment_writer", fields: [writerId], references: [id], map: "comment_writer_fk")
+  writerId Int
+  post     Post   @relation("comment_post", fields: [postId], references: [id], map: "comment_post_fk")
+  postId   Int
+}
+
+model Usersubscription {
+  id            Int   @id(map: "usersubscription_pk") @default(autoincrement())
+  subscriber    User  @relation("subscribers", fields: [subscriberid], references: [id], map: "user_subscriber_fk")
+  subscriberid  Int
+  creator       User  @relation("creators", fields: [creatorid], references: [id], map: "user_creator_fk")
+  creatorid     Int
 }
