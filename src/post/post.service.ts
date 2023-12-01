@@ -1,10 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { PostCreateEvent } from './events/post-create.event';
 
 @Injectable()
 export class PostService {
+  constructor(private eventEmitter: EventEmitter2) {}
+
   create(createPostDto: CreatePostDto) {
+    console.log(createPostDto);
+    this.eventEmitter.emit('post.create', new PostCreateEvent());
     return 'This action adds a new post';
   }
 
