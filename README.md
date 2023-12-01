@@ -16,13 +16,14 @@ Nest js로 SSE 구현하기
 
 ## 상세 목표
 
-- 사용자 테이블 (User), 게시글 테이블 (Post), 댓글 테이블 (Comment), 사용자 구독 정보 테이블 (UserSubscription) 생성 및 crud 작업
+~~- 사용자 테이블 (User), 게시글 테이블 (Post), 댓글 테이블 (Comment), 사용자 구독 정보 테이블 (UserSubscription) 생성 및 crud 작업~~
 
 - 게시글 생성시 삭제일시 ( 생성일시로부터 1시간 뒤 ) 자동 등록
 
-- 사용자 데이터 추가 (userA, userB) - 로그인, 회원가입은 구현하지 않는다.
+- 사용자 데이터 추가 (userA, userB)
 
-- userA가 userB를 구독
+  - 로그인, 회원가입은 구현하지 않는다.
+  - userA는 userB를 구독한다.
 
 - userB가 게시글 작성 시 userA에게 sse로 알림 전송
 
