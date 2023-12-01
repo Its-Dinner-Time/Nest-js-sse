@@ -2,6 +2,7 @@ version: '3.1'
 
 services:
   db:
+    container_name: sse_basic_db
     image: postgres
     environment:
       POSTGRES_DB: sse_basic
@@ -13,6 +14,7 @@ services:
       - db-data:/var/lib/postgresql/data
 
   app:
+    container_name: sse_basic_app
     build: .
     command: pnpm start:dev
     ports:
