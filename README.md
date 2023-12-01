@@ -7,6 +7,7 @@ Nest js로 SSE 구현하기
 - Chat GPT로 받은 코드
 - [Nest js 공식문서](https://docs.nestjs.com/techniques/server-sent-events)
 - [Nest js 예시 Repository](https://github.com/nestjs/nest/tree/master/sample/28-sse)
+- [Event Emitter 활용](https://docs.nestjs.com/techniques/events)
 
 ## 목표
 
