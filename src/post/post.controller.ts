@@ -1,14 +1,10 @@
-import { Controller, Post, Body, Sse } from '@nestjs/common';
+import { Controller, Post, Body, Sse, Req } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
-import { NotificationService } from '@app/notification';
 
 @Controller('post')
 export class PostController {
-  constructor(
-    private readonly postService: PostService,
-    private readonly notificationService: NotificationService,
-  ) {}
+  constructor(private readonly postService: PostService) {}
 
   @Post()
   create(@Body() createPostDto: CreatePostDto) {
@@ -22,7 +18,7 @@ export class PostController {
    * @returns
    */
   @Sse(PostService.SSE_POST_SUB)
-  ssePostSub() {
-    return this.notificationService.getNotifications(PostService.SSE_POST_SUB);
+  ssePostSub(@Req() req: Record<string, any>) {
+    return this.postService.sendNotifications(PostService.SSE_POST_SUB, req);
   }
 }

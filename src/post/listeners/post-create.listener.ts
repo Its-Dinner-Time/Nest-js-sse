@@ -34,9 +34,17 @@ export class PostCreateListener {
       `[Event Emitter] - ${PostCreatedEvent.EVENT_NAME} / ${this.sendNotification.name}`,
     );
 
-    this.notificationService.pushNotification(
-      PostService.SSE_POST_SUB,
-      event.post.title,
-    );
+    // 구독정보를 가져와서 구독자들에게 알림 전송
+    const subscribers = await this.prismaService.userSubscription.findMany({
+      select: { subscriberId: true },
+      where: { creatorId: event.post.authorId },
+    });
+
+    subscribers.forEach((subs) => {
+      this.notificationService.pushNotification(
+        `${PostService.SSE_POST_SUB}-${subs.subscriberId}`,
+        event.post.title,
+      );
+    });
   }
 }
