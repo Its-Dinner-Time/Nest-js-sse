@@ -33,6 +33,8 @@ Nest js로 SSE 구현하기
 
 - userB가 등록한 게시글의 삭제 일시가 30분 전 일때 userB에게 sse로 알림 전송
 
+- 실제 로그인 기능 구현하여 테스트
+
 ## 개발도구
 
 - [Nest js](https://docs.nestjs.com/)
