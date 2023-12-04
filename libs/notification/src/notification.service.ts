@@ -1,23 +1,23 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Subject } from 'rxjs';
 
 @Injectable()
 export class NotificationService {
-  private notifications: Record<string, Subject<any>>;
+  private notifications: Record<string, Subject<string>> = {};
 
   getNotifications(key: string) {
-    const notification = this.notifications[key];
-
-    return notification && notification.asObservable();
-  }
-
-  pushNotification(key: string, note: any) {
-    const notification = this.notifications[key];
-
-    if (notification) {
-      this.notifications[key] = new Subject<any>();
+    if (!this.notifications[key]) {
+      this.notifications[key] = new Subject<string>();
     }
 
-    notification.next(note);
+    return this.notifications[key].asObservable();
+  }
+
+  pushNotification(key: string, note: string) {
+    if (!this.notifications[key]) {
+      this.notifications[key] = new Subject<string>();
+    }
+
+    this.notifications[key].next(note);
   }
 }
