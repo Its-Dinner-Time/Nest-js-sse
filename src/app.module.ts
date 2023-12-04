@@ -6,11 +6,13 @@ import { UserModule } from './user/user.module';
 import { UserSubscriptionModule } from './user-subscription/user-subscription.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { eventEmitterConfig } from 'configs/event-emitter.config';
+import { NotificationModule } from '@app/notification';
 
 @Module({
   imports: [
     EventEmitterModule.forRoot(eventEmitterConfig),
     PrismaModule,
+    NotificationModule,
     CommentModule,
     PostModule,
     UserModule,
