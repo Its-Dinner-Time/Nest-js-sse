@@ -1,34 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Sse } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
+import { NotificationService } from '@app/notification';
 
 @Controller('post')
 export class PostController {
-  constructor(private readonly postService: PostService) {}
+  constructor(
+    private readonly postService: PostService,
+    private readonly notificationService: NotificationService,
+  ) {}
 
   @Post()
   create(@Body() createPostDto: CreatePostDto) {
     return this.postService.create(createPostDto);
   }
 
-  @Get()
-  findAll() {
-    return this.postService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postService.update(+id, updatePostDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postService.remove(+id);
+  /**
+   * ** 중요 **
+   * sse가 제대로 동작하기 위해선 return type을 Observable<string>이 되도록 해야 한다!!
+   *
+   * @returns
+   */
+  @Sse(PostService.SSE_POST_SUB)
+  ssePostSub() {
+    return this.notificationService.getNotifications(PostService.SSE_POST_SUB);
   }
 }

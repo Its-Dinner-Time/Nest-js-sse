@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '@app/prisma';
-import { Prisma } from '@prisma/client';
-import { PostCreateListener } from './listeners/post-create.listener';
 import { PostCreatedEvent } from './events/post-created.event';
 
 @Injectable()
 export class PostService {
+  static readonly SSE_POST_SUB = 'post-sub';
+
   constructor(
     private readonly prismaService: PrismaService, //
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
+  //  게시글 생성
+  //  - userB가 게시글을 작성
   async create(createPostDto: CreatePostDto) {
     const created = await this.prismaService.post.create({
       data: {
@@ -29,21 +30,5 @@ export class PostService {
     );
 
     return { id: created.id };
-  }
-
-  findAll() {
-    return `This action returns all post`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
-  }
-
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} post`;
   }
 }
