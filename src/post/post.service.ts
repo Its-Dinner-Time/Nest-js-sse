@@ -2,16 +2,33 @@ import { Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { PostCreateEvent } from './events/post-create.event';
+import { PrismaService } from '@app/prisma';
+import { Prisma } from '@prisma/client';
+import { PostCreateListener } from './listeners/post-create.listener';
+import { PostCreatedEvent } from './events/post-created.event';
 
 @Injectable()
 export class PostService {
-  constructor(private eventEmitter: EventEmitter2) {}
+  constructor(
+    private readonly prismaService: PrismaService, //
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
-  create(createPostDto: CreatePostDto) {
-    console.log(createPostDto);
-    this.eventEmitter.emit('post.create', new PostCreateEvent());
-    return 'This action adds a new post';
+  async create(createPostDto: CreatePostDto) {
+    const created = await this.prismaService.post.create({
+      data: {
+        title: createPostDto.title,
+        content: createPostDto.content,
+        author: { connect: { id: 2 } },
+      },
+    });
+
+    this.eventEmitter.emit(
+      PostCreatedEvent.EVENT_NAME,
+      new PostCreatedEvent(created),
+    );
+
+    return { id: created.id };
   }
 
   findAll() {
