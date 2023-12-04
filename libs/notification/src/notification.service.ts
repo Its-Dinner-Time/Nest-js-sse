@@ -20,4 +20,8 @@ export class NotificationService {
 
     this.notifications[key].next(note);
   }
+
+  async sendNotificationsToUser(sseEndpoint: string, userId: number) {
+    return this.getNotifications(`${sseEndpoint}-${userId}`);
+  }
 }
