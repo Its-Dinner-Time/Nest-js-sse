@@ -43,7 +43,7 @@ export class PostCreateListener {
     subscribers.forEach((subs) => {
       this.notificationService.pushNotification(
         `${PostService.SSE_POST_SUB}-${subs.subscriberId}`,
-        event.post.title,
+        JSON.stringify(event.post),
       );
     });
   }
