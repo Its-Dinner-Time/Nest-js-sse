@@ -1,6 +1,6 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -41,9 +41,9 @@ model Comment {
 model UserSubscription {
   subscriberId Int
   creatorId    Int
-  creator      User @relation("creators", fields: [creatorId], references: [id], map: "user_creator_fk")
-  subscriber   User @relation("subscribers", fields: [subscriberId], references: [id], map: "user_subscriber_fk")
-  createdAt    DateTime  @default(now())
+  creator      User     @relation("creators", fields: [creatorId], references: [id], map: "user_creator_fk")
+  subscriber   User     @relation("subscribers", fields: [subscriberId], references: [id], map: "user_subscriber_fk")
+  createdAt    DateTime @default(now())
 
   @@id([subscriberId, creatorId], map: "user_subscription_pk")
 }
