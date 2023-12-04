@@ -27,9 +27,9 @@ Nest js로 SSE 구현하기
 ~~- 로그인, 회원가입은 구현하지 않는다.~~
 ~~- userA는 userB를 구독한다.~~
 
-- userB가 게시글 작성 시 userA에게 sse로 알림 전송
+~~- userB가 게시글 작성 시 userA에게 sse로 알림 전송~~
 
-- userA가 userB의 글에 댓글을 추가할 시 userB에게 sse로 알림 전송
+~~- userA가 userB의 글에 댓글을 추가할 시 userB에게 sse로 알림 전송~~
 
 - userB가 등록한 게시글의 삭제 일시가 30분 전 일때 userB에게 sse로 알림 전송
 

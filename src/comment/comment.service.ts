@@ -1,26 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
+import { PrismaService } from '@app/prisma';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { CommentCreatedEvent } from './events/comment-created.event';
 
 @Injectable()
 export class CommentService {
-  create(createCommentDto: CreateCommentDto) {
-    return 'This action adds a new comment';
-  }
+  static readonly SSE_POST_AUTHOR = 'post-author';
 
-  findAll() {
-    return `This action returns all comment`;
-  }
+  constructor(
+    private readonly prismaService: PrismaService, //
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
-  }
+  async create(createCommentDto: CreateCommentDto) {
+    // userB의 게시글 하나 가져오기
+    // - 실제 구현시에는 dto에 게시글 id를 포함시킨다.
+    const { id: postId } = await this.prismaService.post.findFirst({
+      select: { id: true },
+      where: { authorId: 2 },
+    });
 
-  update(id: number, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
-  }
+    // userA가 게시글에 댓글 달기
+    const created = await this.prismaService.comment.create({
+      data: { content: createCommentDto.content, postId, writerId: 1 },
+    });
 
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+    // 이벤트 발생 처리
+    this.eventEmitter.emit(
+      CommentCreatedEvent.EVENT_NAME, //
+      new CommentCreatedEvent(created),
+    );
+
+    return { id: created.id };
   }
 }
